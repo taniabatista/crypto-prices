@@ -1,4 +1,5 @@
 import requests
+from rates import get_rate
 
 response = requests.get("https://shakepay.github.io/programming-exercise/web/transaction_history.json")
 data = response.json()
@@ -13,6 +14,7 @@ balance = {
 for txn in transactions:
     currency = txn['currency']
     amount = txn['amount']
+    date = txn['createdAt']
 
     if txn['direction'] == 'debit':
         balance[currency] -= amount
@@ -29,5 +31,14 @@ for txn in transactions:
 
     txn['balance'] = balance
 
-    net_worth = balance['CAD'] + balance['BTC']*49567.5 + balance['ETH']*3622.99
+    net_worth = (
+            balance['CAD'] +
+            balance['BTC']*get_rate('BTC', date) +
+            balance['ETH']*get_rate('ETH', date)
+    )
+
     txn['net_worth'] = net_worth
+
+
+def get_net_worth_by_day():
+    return [{txn['createdAt']: txn['net_worth']} for txn in transactions]
