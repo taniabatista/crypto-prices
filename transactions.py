@@ -11,10 +11,11 @@ balance = {
     "ETH": 0
 }
 
+net_worth_by_day = {}
 for txn in transactions:
     currency = txn['currency']
     amount = txn['amount']
-    date = txn['createdAt']
+    date = txn['createdAt'][:10]
 
     if txn['direction'] == 'debit':
         balance[currency] -= amount
@@ -31,14 +32,12 @@ for txn in transactions:
 
     txn['balance'] = balance
 
-    net_worth = (
+    net = (
             balance['CAD'] +
-            balance['BTC']*get_rate('BTC', date) +
-            balance['ETH']*get_rate('ETH', date)
-    )
+            (balance['BTC'] * get_rate('BTC', date)) +
+            (balance['ETH'] * get_rate('ETH', date))
+    )/1000000
+    net_worth = float(format(net, ".3f"))
 
     txn['net_worth'] = net_worth
-
-
-def get_net_worth_by_day():
-    return [{txn['createdAt']: txn['net_worth']} for txn in transactions]
+    net_worth_by_day.update({date: net_worth})
