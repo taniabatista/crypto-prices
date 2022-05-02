@@ -28,3 +28,6 @@ for txn in transactions:
         balance[to_currency] += to_amount
 
     txn['balance'] = balance
+
+    net_worth = balance['CAD'] + balance['BTC']*49567.5 + balance['ETH']*3622.99
+    txn['net_worth'] = net_worth
