@@ -17,7 +17,7 @@ class MyHttpRequestHandler(http.server.SimpleHTTPRequestHandler):
 
         # Extract query param
         greeting = "crypto is the future!"
-        url = "net_worth_chart.png"
+        url = "https://raw.githubusercontent.com/taniabatista/crypto-prices/main/net_worth_chart.png"
         query_components = parse_qs(urlparse(self.path).query)
         if 'name' in query_components:
             name = query_components["name"][0]
